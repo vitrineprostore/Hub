@@ -567,7 +567,6 @@ button,input,textarea,select{font-family:inherit;outline:none;}
       <div class="card">
         <h2>Seu plano atual</h2>
         <p class="uso-texto" id="planoAtualTexto" style="margin-bottom:14px;">—</p>
-        <p class="status-msg" id="anuncioStatusTexto" style="margin-bottom:14px;"></p>
 
         <div class="planos-grid" id="planosGridPainel"></div>
         <p class="status-msg" id="planoStatus"></p>
@@ -599,12 +598,10 @@ const NIVEIS_PLANO = {
     depoimentosDisponivel: false,
     limiteDepoimentos: 0,        // só importa quando depoimentosDisponivel = true (0 = ilimitado)
     provaSocial: false,          // nota média + contador de pedidos na vitrine
-    anuncios: true,              // exibe Google AdSense na loja (monetização do plano de entrada)
     recursos: [
       "Catálogo com até 20 produtos",
       "Loja própria com pedidos direto no WhatsApp",
-      "1 banner de destaque no topo",
-      "Com anúncios do Google na loja"
+      "1 banner de destaque no topo"
     ]
   },
   intermediario: {
@@ -616,14 +613,12 @@ const NIVEIS_PLANO = {
     depoimentosDisponivel: true,
     limiteDepoimentos: 10,
     provaSocial: true,
-    anuncios: false,             // Growth remove os anúncios do Google — diferencial do upgrade
     recursos: [
       "Tudo do nível Starter",
       "Catálogo com até 50 produtos",
       "Até 5 banners rotativos",
       "Depoimentos de clientes na loja",
-      "Nota média e nº de pedidos em destaque",
-      "Sem anúncios — loja 100% limpa"
+      "Nota média e nº de pedidos em destaque"
     ]
   },
   completo: {
@@ -635,7 +630,6 @@ const NIVEIS_PLANO = {
     depoimentosDisponivel: true,
     limiteDepoimentos: 0,
     provaSocial: true,
-    anuncios: false,             // Elite também é livre de anúncios
     recursos: [
       "Tudo do nível Growth",
       "Produtos ilimitados",
@@ -662,10 +656,7 @@ function getEntitlements(c){
     limiteBanners:          typeof c.limiteBanners === "number" ? c.limiteBanners : base.limiteBanners,
     depoimentosDisponivel:  typeof c.depoimentosDisponivel === "boolean" ? c.depoimentosDisponivel : base.depoimentosDisponivel,
     limiteDepoimentos:      typeof c.limiteDepoimentos === "number" ? c.limiteDepoimentos : base.limiteDepoimentos,
-    provaSocial:            typeof c.provaSocial === "boolean" ? c.provaSocial : base.provaSocial,
-    // anuncios: true = a loja exibe Google AdSense (só o Starter, por padrão).
-    // c.semAnuncios = true é uma isenção manual (ex: cortesia do super admin), sempre vence.
-    anuncios:               c.semAnuncios === true ? false : (typeof c.anuncios === "boolean" ? c.anuncios : base.anuncios)
+    provaSocial:            typeof c.provaSocial === "boolean" ? c.provaSocial : base.provaSocial
   };
 }
 
@@ -921,8 +912,6 @@ async function fazerCadastro(){
       depoimentosDisponivel: nivel.depoimentosDisponivel,
       limiteDepoimentos: nivel.limiteDepoimentos,        // 0 = ilimitado (só quando disponível)
       provaSocial: nivel.provaSocial,
-      anuncios: nivel.anuncios,      // Starter = true (exibe AdSense) · Growth/Elite = false
-      semAnuncios: false,            // isenção manual (super admin), independe do plano
       status: "teste",              // teste | ativo | suspenso (teste = dentro dos 7 dias grátis; suspenso é controlado só pelo super admin)
       planoSolicitado: null,        // preenchido quando o lojista pede troca de plano
       limiteSolicitado: null,
@@ -1615,15 +1604,6 @@ function atualizarPainelPlano(c){
     texto += ` · Cliente desde ${formatarData(c.criadoEm)}`;
   }
   document.getElementById("planoAtualTexto").innerText = texto;
-
-  const ent = getEntitlements(c);
-  const anuncioEl = document.getElementById("anuncioStatusTexto");
-  if(anuncioEl){
-    anuncioEl.innerHTML = ent.anuncios
-      ? `📢 Sua loja está exibindo anúncios do Google (parte do plano Starter). <span class="link-upgrade" onclick="irParaMeuPlano()">Assine Growth ou Elite para remover 100% dos anúncios</span>`
-      : `✅ Sua loja está sem anúncios.`;
-  }
-
   document.querySelectorAll("#planosGridPainel .plano-card").forEach(card=>{
     card.classList.toggle("selecionado", card.dataset.plano === c.plano);
   });

@@ -2,10 +2,6 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<!-- Verificação de propriedade do site no Google AdSense — fixa no HTML,
-     não depende do JS/Firestore carregar, então o rastreador do Google
-     sempre consegue encontrar (mesmo em lojas sem anúncio ativo agora). -->
-<meta name="google-adsense-account" content="ca-pub-6997058042069390">
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title id="tituloLoja">Rabisco & Arte - Produtos Personalizados</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -252,102 +248,17 @@ header.scrolled img {
 }
 
 /* =============================================
-   ANÚNCIOS (Google AdSense) — visível apenas para lojas
-   no plano Starter (ver JS: configurarAnuncios). Fica com
-   "display:none" no HTML e só aparece via JS quando a loja
-   tem direito a exibir anúncios. Tamanho contido e rótulo
-   discreto para não competir com o catálogo.
-============================================= */
-.anuncio-slot {
-  display: none;
-  max-width: 320px;
-  margin: 12px auto;
-  padding: 0 14px;
-  text-align: center;
-}
-
-.anuncio-slot .anuncio-rotulo {
-  display: block;
-  text-align: center;
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: var(--cinza-texto);
-  opacity: 0.4;
-  margin-bottom: 3px;
-}
-
-.anuncio-slot .adsbygoogle {
-  margin: 0 auto;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
-
-/* Anúncio "no lugar de um produto", inserido dentro do grid a cada
-   6 produtos (ver posicionarAnunciosGrid). Usa o mesmo cartão visual
-   dos produtos pra não quebrar a hierarquia do catálogo. */
-.anuncio-produto {
-  background: var(--fundo-card);
-  border-radius: var(--radius-md);
-  border: 1.5px solid rgba(155,89,197,0.10);
-  box-shadow: var(--sombra-card);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 10px;
-}
-
-.anuncio-produto .anuncio-rotulo {
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: var(--cinza-texto);
-  opacity: 0.4;
-}
-
-.anuncio-produto .adsbygoogle {
-  width: 100%;
-}
-
-/* =============================================
    FILTROS
 ============================================= */
 .filtro-container {
   display: flex;
-  flex-wrap: nowrap;
   justify-content: center;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  flex-wrap: wrap;
   gap: 10px;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 14px 16px;
-  /* fica fixo (sticky) logo abaixo do header ao rolar a página;
-     o "top" exato é ajustado via JS (ajustarPosicaoFiltro), porque a
-     altura do header muda quando ele encolhe no scroll */
-  position: sticky;
-  top: 64px;
-  z-index: 850;
-  background: var(--fundo-suave);
-  transition: box-shadow 0.25s ease;
-}
-
-.filtro-container.colado {
-  box-shadow: 0 6px 20px rgba(91,45,142,0.14);
-}
-
-.filtro-container::-webkit-scrollbar {
-  display: none;
+  margin: 28px 16px 20px;
 }
 
 .filtro-container button {
-  flex: none;
   background: var(--branco);
   border: 2px solid var(--roxo-lavanda);
   padding: 9px 20px;
@@ -359,7 +270,6 @@ header.scrolled img {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(91,45,142,0.08);
-  white-space: nowrap;
 }
 
 .filtro-container button:hover {
@@ -1233,14 +1143,6 @@ footer a:hover { text-decoration: underline; }
   </div>
 </div>
 
-<!-- ANÚNCIO (Google AdSense) — só aparece no plano Starter -->
-<div class="anuncio-slot" id="anuncioTopo">
-  <span class="anuncio-rotulo">Publicidade</span>
-  <ins class="adsbygoogle"
-       style="display:inline-block;width:300px;height:100px"
-       data-ad-slot="2590334423"></ins>
-</div>
-
 <!-- FILTROS -->
 <div class="filtro-container" id="filtroContainer" aria-label="Filtrar produtos">
   <button data-cat="todos" class="ativo">Todos</button>
@@ -1253,8 +1155,6 @@ footer a:hover { text-decoration: underline; }
 
 <!-- PRODUTOS -->
 <main id="catalogo"></main>
-<!-- O anúncio "entre produtos" agora é injetado dentro do próprio grid,
-     no lugar de um produto, a cada 6 itens — ver posicionarAnunciosGrid() -->
 
 <!-- VER MAIS -->
 <div class="ver-mais-wrap">
@@ -1294,16 +1194,6 @@ footer a:hover { text-decoration: underline; }
     <div class="selo"><img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="Pagamento"><span>Pagamento Seguro</span></div>
   </div>
 </section>
-
-<!-- ANÚNCIO (Google AdSense) — só aparece no plano Starter -->
-<div class="anuncio-slot" id="anuncioRodape">
-  <span class="anuncio-rotulo">Publicidade</span>
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-format="auto"
-       data-full-width-responsive="true"
-       data-ad-slot="8510010989"></ins>
-</div>
 
 <!-- FOOTER -->
 <footer>
@@ -1410,97 +1300,6 @@ function badgeClass(badge){
   if(b.includes('novidade')) return 'badge badge-novidade';
   if(b.includes('promo'))    return 'badge badge-promocao';
   return 'badge badge-default';
-}
-
-/* =====================================================================
-   GOOGLE ADSENSE — monetização do plano Starter.
-   Regra de negócio (mesma fonte de verdade do admin.html/superadmin.html,
-   gravada no documento da loja em NIVEIS_PLANO[plano].anuncios):
-     • Starter  → exibe anúncios do Google na loja.
-     • Growth e Elite → sem anúncios (é um diferencial do upgrade).
-     • c.semAnuncios === true → isenção manual do super admin, sempre vence.
-   O script do AdSense só é carregado quando a loja realmente vai exibir
-   anúncios — assim quem paga mais caro nunca carrega nada do AdSense.
-   ===================================================================== */
-const ADSENSE_CLIENT_ID = "ca-pub-6997058042069390"; // Publisher ID real do Google AdSense
-const PLANOS_SEM_ANUNCIOS = ["intermediario", "completo"]; // Growth e Elite
-let EXIBIR_ANUNCIOS = false;
-let ADSENSE_SCRIPT_CARREGADO = false;
-
-function lojaExibeAnuncios(c){
-  if(c.semAnuncios === true) return false;
-  if(typeof c.anuncios === "boolean") return c.anuncios;
-  // Loja antiga, sem o campo "anuncios" salvo: cai no padrão do plano atual.
-  return !PLANOS_SEM_ANUNCIOS.includes(c.plano);
-}
-
-function configurarAnuncios(c){
-  EXIBIR_ANUNCIOS = lojaExibeAnuncios(c);
-  if(!EXIBIR_ANUNCIOS) return; // Growth/Elite ou isenção manual: nenhum script é carregado
-
-  ["anuncioTopo","anuncioRodape"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.style.display = "block";
-  });
-
-  const script = document.createElement("script");
-  script.async = true;
-  script.crossOrigin = "anonymous";
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`;
-  script.onload = ()=>{
-    ADSENSE_SCRIPT_CARREGADO = true;
-    ativarAnunciosPendentes();
-  };
-  script.onerror = ()=> console.error("Não foi possível carregar o script do Google AdSense.");
-  document.head.appendChild(script);
-}
-
-/* Ativa (push) qualquer <ins class="adsbygoogle"> que ainda não foi
-   ativado — cobre tanto os anúncios estáticos (topo/rodapé) quanto os
-   que entram dinamicamente no grid conforme mais produtos aparecem. */
-function ativarAnunciosPendentes(){
-  if(!ADSENSE_SCRIPT_CARREGADO) return;
-  document.querySelectorAll(".adsbygoogle:not([data-ativado])").forEach(ins=>{
-    ins.setAttribute("data-ad-client", ADSENSE_CLIENT_ID);
-    ins.setAttribute("data-ativado", "1");
-    try{ (window.adsbygoogle = window.adsbygoogle || []).push({}); }
-    catch(err){ console.error("Erro ao carregar anúncio AdSense:", err); }
-  });
-}
-
-/* Cria o card de anúncio que entra "no lugar de um produto" dentro do grid.
-   Usa o formato In-feed (fluid) do AdSense — pensado pra aparecer dentro
-   de listas/grids de forma nativa, sem largura/altura fixa. */
-function criarCardAnuncioGrid(){
-  const div = document.createElement("div");
-  div.className = "anuncio-produto";
-  div.innerHTML = `
-    <span class="anuncio-rotulo">Publicidade</span>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-format="fluid"
-         data-ad-layout-key="-6t+ed+2i-1n-4w"
-         data-ad-slot="1131194358"></ins>
-  `;
-  return div;
-}
-
-/* Insere 1 anúncio a cada 6 produtos visíveis (respeitando o filtro de
-   categoria e a paginação atuais). Refaz do zero a cada chamada, então
-   pode ser chamada sempre que a lista de produtos visíveis mudar. */
-function posicionarAnunciosGrid(){
-  const catalogo = document.getElementById("catalogo");
-  if(!catalogo) return;
-  catalogo.querySelectorAll(".anuncio-produto").forEach(el=>el.remove());
-  if(!EXIBIR_ANUNCIOS) return;
-
-  const visiveis = Array.from(catalogo.querySelectorAll(".produto"))
-    .filter(p=>p.style.display !== "none");
-
-  for(let i=6; i<=visiveis.length; i+=6){
-    visiveis[i-1].after(criarCardAnuncioGrid());
-  }
-  ativarAnunciosPendentes();
 }
 
 /* ===== RESOLVER LOJA PELA URL (?loja=slug) ===== */
@@ -1921,7 +1720,6 @@ function mostrarProdutos(){
   });
   const btn = document.getElementById("verMaisBtn");
   if(btn) btn.style.display = itensVisiveis >= totalFiltrados ? "none" : "inline-block";
-  posicionarAnunciosGrid();
 }
 
 /* ===== VER MAIS ===== */
@@ -1942,16 +1740,6 @@ const observer = new IntersectionObserver(entries=>{
 observer.observe(document.getElementById("verMaisBtn"));
 
 /* ===== HEADER STICKY SCROLL ===== */
-function ajustarPosicaoFiltro(){
-  const header = document.querySelector("header");
-  const filtro = document.getElementById("filtroContainer");
-  if(!header || !filtro) return;
-  const alturaHeader = header.offsetHeight;
-  filtro.style.top = alturaHeader + "px";
-  const colado = filtro.getBoundingClientRect().top <= alturaHeader + 1;
-  filtro.classList.toggle("colado", colado);
-}
-
 window.addEventListener("scroll", ()=>{
   const header = document.querySelector("header");
   if(window.scrollY > 10){
@@ -1959,19 +1747,13 @@ window.addEventListener("scroll", ()=>{
   } else {
     header.classList.remove("scrolled");
   }
-  ajustarPosicaoFiltro();
 }, { passive: true });
-
-window.addEventListener("resize", ajustarPosicaoFiltro);
-window.addEventListener("load", ajustarPosicaoFiltro);
 
 /* ===== INIT ===== */
 document.addEventListener("DOMContentLoaded", async ()=>{
   const lojaConfig = await resolverLoja();
   if(!lojaConfig) return; // loja não encontrada, mensagem já exibida
   carregarConfigLoja(lojaConfig);
-  configurarAnuncios(lojaConfig);
-  ajustarPosicaoFiltro();
   carregarBanners();
   carregarProdutos();
   iniciarDepoimentos();

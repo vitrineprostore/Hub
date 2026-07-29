@@ -170,12 +170,10 @@ const NIVEIS_PLANO = {
     depoimentosDisponivel: false,
     limiteDepoimentos: 0,
     provaSocial: false,
-    anuncios: true,
     recursos: [
       "Catálogo com até 20 produtos",
       "Loja própria com pedidos direto no WhatsApp",
-      "1 banner de destaque no topo",
-      "Com anúncios do Google na loja"
+      "1 banner de destaque no topo"
     ]
   },
   intermediario: {
@@ -187,14 +185,12 @@ const NIVEIS_PLANO = {
     depoimentosDisponivel: true,
     limiteDepoimentos: 10,
     provaSocial: true,
-    anuncios: false,
     recursos: [
       "Tudo do nível Starter",
       "Catálogo com até 50 produtos",
       "Até 5 banners rotativos",
       "Depoimentos de clientes na loja",
-      "Nota média e nº de pedidos em destaque",
-      "Sem anúncios — loja 100% limpa"
+      "Nota média e nº de pedidos em destaque"
     ]
   },
   completo: {
@@ -206,7 +202,6 @@ const NIVEIS_PLANO = {
     depoimentosDisponivel: true,
     limiteDepoimentos: 0,
     provaSocial: true,
-    anuncios: false,
     recursos: [
       "Tudo do nível Growth",
       "Produtos ilimitados",
@@ -232,8 +227,7 @@ function getEntitlements(c){
     limiteBanners:          typeof c.limiteBanners === "number" ? c.limiteBanners : base.limiteBanners,
     depoimentosDisponivel:  typeof c.depoimentosDisponivel === "boolean" ? c.depoimentosDisponivel : base.depoimentosDisponivel,
     limiteDepoimentos:      typeof c.limiteDepoimentos === "number" ? c.limiteDepoimentos : base.limiteDepoimentos,
-    provaSocial:            typeof c.provaSocial === "boolean" ? c.provaSocial : base.provaSocial,
-    anuncios:               c.semAnuncios === true ? false : (typeof c.anuncios === "boolean" ? c.anuncios : base.anuncios)
+    provaSocial:            typeof c.provaSocial === "boolean" ? c.provaSocial : base.provaSocial
   };
 }
 
@@ -246,8 +240,7 @@ function resumoRecursos(ent){
     ent.depoimentosDisponivel
       ? `💜 depoimentos ${ent.limiteDepoimentos ? "(até "+ent.limiteDepoimentos+")" : "ilimitados"}`
       : `💜 sem depoimentos`,
-    ent.provaSocial ? `⭐ prova social ativa` : `⭐ sem prova social`,
-    ent.anuncios ? `📢 com anúncios AdSense` : `✅ sem anúncios`
+    ent.provaSocial ? `⭐ prova social ativa` : `⭐ sem prova social`
   ];
   return partes.join(" &nbsp;·&nbsp; ");
 }
@@ -411,10 +404,6 @@ async function carregarLojas(){
           ? `<button class="btn-reativar" onclick="alterarStatus('${id}','ativo')">▶️ Reativar acesso</button>`
           : `<button class="btn-suspender" onclick="alterarStatus('${id}','suspenso')">⏸️ Suspender acesso</button>`
         ) : ""}
-        ${ent.anuncios
-          ? `<button class="btn-link" onclick="alternarIsencaoAnuncios('${id}', true)">🙈 Isentar de anúncios (cortesia)</button>`
-          : (l.semAnuncios ? `<button class="btn-link" onclick="alternarIsencaoAnuncios('${id}', false)">📢 Voltar a exibir anúncios</button>` : "")
-        }
       </div>
     `;
     lista.appendChild(card);
@@ -455,21 +444,9 @@ async function aprovarPlano(id, novoPlano){
     depoimentosDisponivel: n.depoimentosDisponivel,
     limiteDepoimentos: n.limiteDepoimentos,
     provaSocial: n.provaSocial,
-    anuncios: n.anuncios,
     planoSolicitado: null,
     limiteSolicitado: null
   });
-  carregarLojas();
-}
-
-/* Isenção manual de anúncios — cortesia do super admin, independente do
-   plano contratado. Vence sempre sobre o campo "anuncios" (ver getEntitlements). */
-async function alternarIsencaoAnuncios(id, isentar){
-  const msg = isentar
-    ? "Isentar essa loja de exibir anúncios do Google, como cortesia?"
-    : "Voltar a exibir anúncios do Google nessa loja (conforme o plano contratado)?";
-  if(!confirm(msg)) return;
-  await db.collection("lojas").doc(id).update({ semAnuncios: isentar });
   carregarLojas();
 }
 
